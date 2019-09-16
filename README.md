@@ -192,7 +192,7 @@ Simply pass your custom Moment object with locale attached to it as a prop.
 ```js
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import DateRangePicker from "./components/react-native-daterange-picker/src";
+import DateRangePicker from "react-native-daterange-picker";
 
 import moment from "moment/min/moment-with-locales";
 moment.locale("en");
