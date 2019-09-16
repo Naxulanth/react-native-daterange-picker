@@ -1,12 +1,12 @@
 {
-  "name": "react-native-date-range",
+  "name": "react-native-daterange-picker",
   "version": "1.0.0",
   "description": "Date range and single date picker for React Native (Supports iOS and Android)",
   "main": "src/index.js",
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/naxulanth/react-native-date-range.git"
+    "url": "git+https://github.com/naxulanth/react-native-daterange-picker.git"
   },
   "keywords": [
     "react-native",
@@ -17,9 +17,9 @@
   "author": "Naxulanth",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/naxulanth/react-native-date-range/issues"
+    "url": "https://github.com/naxulanth/react-native-daterange-picker/issues"
   },
-  "homepage": "https://github.com/naxulanth/react-native-date-range/",
+  "homepage": "https://github.com/naxulanth/react-native-daterange-picker/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^1.2.22",
     "@fortawesome/free-solid-svg-icons": "^5.10.2",
