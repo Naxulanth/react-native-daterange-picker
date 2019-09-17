@@ -1,21 +1,20 @@
-import React, { Component, Fragment } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TouchableWithoutFeedback,
-  View,
-  TouchableOpacity
-} from "react-native";
-import PropTypes from "prop-types";
-import { Dimensions } from "react-native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import {
   faChevronLeft,
   faChevronRight
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { isEqual } from "lodash";
 import momentDefault from "moment";
+import PropTypes from "prop-types";
+import React, { Component, Fragment } from "react";
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View
+} from "react-native";
 
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
@@ -26,8 +25,9 @@ export default class DateRangePicker extends Component {
     super(props);
     this.state = {
       isOpen: false,
-      days: [],
-      selecting: false
+      weeks: [],
+      selecting: false,
+      dayHeaders: []
     };
   }
 
@@ -36,133 +36,18 @@ export default class DateRangePicker extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    const { isOpen } = this.state;
-    const {
-      open,
-      onChange,
-      displayedDate,
-      startDate,
-      endDate,
-      date
-    } = this.props;
     if (!isEqual(prevProps, this.props)) {
       this.populate();
     }
   }
 
   populate = () => {
-    const {
-      displayedDate,
-      startDate,
-      endDate,
-      selectedStyle,
-      selectedTextStyle,
-      minDate,
-      maxDate,
-      disabledStyle,
-      dayStyle,
-      dayTextStyle,
-      disabledTextStyle
-    } = this.props;
-    const dayStyles = {
-      ...styles.dayDefaults,
-      ...styles.day,
-      ...dayStyle
-    };
-    const dayTextStyles = {
-      ...styles.dayTextDefaults,
-      ...styles.dayText,
-      ...dayTextStyle
-    };
-    const disabledStyles = {
-      ...styles.selectedDefaults,
-      ...styles.disabled,
-      ...disabledStyle
-    };
-    const disabledTextStyles = { ...styles.disabledText, ...disabledTextStyle };
-    const selectedStyles = {
-      ...styles.selectedDefaults,
-      ...styles.selected,
-      ...selectedStyle
-    };
-    const selectedTextStyles = { ...styles.selectedText, ...selectedTextStyle };
-    let days = [];
-    for (let i = 1; i <= displayedDate.daysInMonth(); ++i) {
-      let date = moment(displayedDate).set("date", i);
-      let selected =
-        (startDate &&
-          endDate &&
-          date.isBetween(startDate, endDate, null, "[]")) ||
-        (startDate && date.isSame(startDate, "day")) ||
-        (this.props.date && date.isSame(this.props.date, "day"));
-      let disabled =
-        (minDate && date.isBefore(minDate, "day")) ||
-        (maxDate && date.isAfter(maxDate, "day"));
-      days.push(
-        <TouchableOpacity key={i} onPress={() => !disabled && this.select(i)}>
-          <View style={styles.day}>
-            <View
-              style={{
-                ...(!disabled && !selected && dayStyles),
-                ...(selected && selectedStyles),
-                ...(disabled && disabledStyles)
-              }}
-            >
-              <Text
-                style={{
-                  ...(!disabled && !selected && dayTextStyles),
-                  ...(selected && selectedTextStyles),
-                  ...(disabled && disabledTextStyles)
-                }}
-              >
-                {i}
-              </Text>
-            </View>
-          </View>
-        </TouchableOpacity>
-      );
-    }
+    let dayHeaders = this.populateHeaders();
+    let weeks = this.populateWeeks();
     this.setState({
-      days
+      dayHeaders,
+      weeks
     });
-  };
-
-  select = day => {
-    const { range, displayedDate, endDate, startDate, onChange } = this.props;
-    const { selecting } = this.state;
-    let date = moment(displayedDate);
-    date.set("date", day);
-    if (range) {
-      if (selecting) {
-        if (date.isBefore(startDate)) {
-          this.setState(
-            {
-              selecting: true
-            },
-            () => onChange({ startDate: date })
-          );
-        } else
-          this.setState(
-            {
-              selecting: !selecting
-            },
-            () => onChange({ endDate: date })
-          );
-      } else {
-        this.setState(
-          {
-            selecting: !selecting
-          },
-          () => onChange({ date: null, endDate: null, startDate: date })
-        );
-      }
-    } else {
-      onChange({
-        date: date,
-        startDate: null,
-        endDate: null
-      });
-    }
   };
 
   onOpen = () => {
@@ -198,6 +83,178 @@ export default class DateRangePicker extends Component {
     });
   };
 
+  selected = date => {
+    const { startDate, endDate } = this.props;
+    return (
+      (startDate &&
+        endDate &&
+        date.isBetween(startDate, endDate, null, "[]")) ||
+      (startDate && date.isSame(startDate, "day")) ||
+      (this.props.date && date.isSame(this.props.date, "day"))
+    );
+  };
+
+  disabled = date => {
+    const { minDate, maxDate } = this.props;
+    return (
+      (minDate && date.isBefore(minDate, "day")) ||
+      (maxDate && date.isAfter(maxDate, "day"))
+    );
+  };
+
+  generateDay = (i, selected, disabled) => {
+    const {
+      selectedStyle,
+      selectedTextStyle,
+      disabledStyle,
+      dayStyle,
+      dayTextStyle,
+      disabledTextStyle
+    } = this.props;
+    const dayStyles = {
+      ...styles.dayDefaults,
+      ...styles.day,
+      ...dayStyle
+    };
+    const dayTextStyles = {
+      ...styles.dayTextDefaults,
+      ...styles.dayText,
+      ...dayTextStyle
+    };
+    const disabledStyles = {
+      ...styles.selectedDefaults,
+      ...styles.disabled,
+      ...disabledStyle
+    };
+    const disabledTextStyles = { ...styles.disabledText, ...disabledTextStyle };
+    const selectedStyles = {
+      ...styles.selectedDefaults,
+      ...styles.selected,
+      ...selectedStyle
+    };
+    const selectedTextStyles = { ...styles.selectedText, ...selectedTextStyle };
+    return (
+      <TouchableOpacity
+        key={"day-" + i}
+        onPress={() => !disabled && this.select(i)}
+      >
+        <View style={styles.day}>
+          <View
+            style={{
+              ...dayStyles,
+              ...(selected && selectedStyles),
+              ...(disabled && disabledStyles)
+            }}
+          >
+            <Text
+              style={{
+                ...dayTextStyles,
+                ...(selected && selectedTextStyles),
+                ...(disabled && disabledTextStyles)
+              }}
+            >
+              {i}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  populateHeaders = () => {
+    let dayHeaders = [];
+    const { dayHeaderTextStyle, dayHeaderStyle, displayedDate } = this.props;
+    const dayHeaderStyles = {
+      ...styles.dayHeaderDefaults,
+      ...styles.dayHeader,
+      ...dayHeaderStyle
+    };
+    const dayHeaderTextStyles = {
+      ...styles.dayHeaderTextDefaults,
+      ...styles.dayHeaderText,
+      ...dayHeaderTextStyle
+    };
+    for (let i = 0; i <= 6; ++i) {
+      let day = moment(displayedDate)
+        .day(i)
+        .format("dddd")
+        .substr(0, 2);
+      dayHeaders.push(
+        <View key={"headers-" + i} style={dayHeaderStyles}>
+          <Text style={dayHeaderTextStyles}>{day}</Text>
+        </View>
+      );
+    }
+    return dayHeaders;
+  };
+
+  populateWeeks = () => {
+    const { displayedDate } = this.props;
+    let weeks = [];
+    let week = [];
+    let daysInMonth = displayedDate.daysInMonth();
+    for (let i = 1; i <= daysInMonth; ++i) {
+      let date = moment(displayedDate).set("date", i);
+      let selected = this.selected(date);
+      let disabled = this.disabled(date);
+      let day = this.generateDay(i, selected, disabled);
+      week.push(day);
+      if (i % 7 === 0 || i === daysInMonth) {
+        if (week.length < 7)
+          week = week.concat(
+            Array.from({ length: 7 - week.length }, (x, i) => (
+              <View key={"empty-" + i} style={styles.day}></View>
+            ))
+          );
+        weeks.push(
+          <View key={"weeks-" + i} style={styles.week}>
+            {week}
+          </View>
+        );
+        week = [];
+      }
+    }
+    return weeks;
+  };
+
+  select = day => {
+    const { range, displayedDate, startDate, onChange } = this.props;
+    const { selecting } = this.state;
+    let date = moment(displayedDate);
+    date.set("date", day);
+    if (range) {
+      if (selecting) {
+        if (date.isBefore(startDate, "day")) {
+          this.setState(
+            {
+              selecting: true
+            },
+            () => onChange({ startDate: date })
+          );
+        } else
+          this.setState(
+            {
+              selecting: !selecting
+            },
+            () => onChange({ endDate: date })
+          );
+      } else {
+        this.setState(
+          {
+            selecting: !selecting
+          },
+          () => onChange({ date: null, endDate: null, startDate: date })
+        );
+      }
+    } else {
+      onChange({
+        date: date,
+        startDate: null,
+        endDate: null
+      });
+    }
+  };
+
   render() {
     const {
       backdropStyle,
@@ -210,7 +267,7 @@ export default class DateRangePicker extends Component {
       children,
       displayedDate
     } = this.props;
-    const { isOpen, days } = this.state;
+    const { isOpen, weeks, dayHeaders } = this.state;
     const mergedStyles = {
       backdrop: {
         ...styles.backdropDefaults,
@@ -283,7 +340,12 @@ export default class DateRangePicker extends Component {
                   )}
                 </TouchableOpacity>
               </View>
-              <View style={styles.days}>{days}</View>
+              <View style={styles.calendar}>
+                {this.props.dayHeaders && (
+                  <View style={styles.dayHeaderContainer}>{dayHeaders}</View>
+                )}
+                {weeks}
+              </View>
             </View>
           </View>
         </View>
@@ -294,6 +356,11 @@ export default class DateRangePicker extends Component {
     );
   }
 }
+
+DateRangePicker.defaultProps = {
+  dayHeaders: true,
+  range: false
+};
 
 DateRangePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
@@ -327,7 +394,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 8,
     width: width * 0.85,
-    height: height * 0.42
   },
   closeTrigger: {
     width: width,
@@ -349,6 +415,12 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 15
   },
+  calendar: {
+    paddingTop: 20,
+    paddingBottom: 20,
+    width: "100%",
+    padding: 10
+  },
   headerText: {
     fontSize: 16,
     color: "black"
@@ -360,24 +432,34 @@ const styles = StyleSheet.create({
   day: {
     width: width * 0.09,
     height: height * 0.065,
-    alignItems: "center",
     justifyContent: "center"
+  },
+  dayHeader: {
+    width: width * 0.09,
+    height: height * 0.03,
+    justifyContent: "center"
+  },
+  dayHeaderText: {
+    opacity: 0.6,
+    textAlign: "center"
+  },
+  dayHeaderContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-evenly",
+    paddingBottom: 10
   },
   dayText: {
     fontSize: 16,
     textAlign: "center"
   },
-  days: {
-    padding: 20,
+  week: {
     flexDirection: "row",
-    justifyContent: "flex-start",
-    width: "100%",
-    height: "100%",
-    flexWrap: "wrap"
+    flexWrap: "wrap",
+    justifyContent: "space-evenly"
   },
   selected: {
     backgroundColor: "#3b83f7",
-    width: "90%",
     height: "80%",
     borderRadius: 8
   },
@@ -389,6 +471,6 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   disabledText: {
-    opacity: 0.5
+    opacity: 0.3
   }
 });

@@ -1,3 +1,4 @@
+
 # react-native-daterange-picker
 
 A React Native component for picking date ranges or single dates.
@@ -18,6 +19,7 @@ or
 ```npm install --save react-native-daterange-picker```
 
 ## Usage
+
 
 ### Date range
 
@@ -252,10 +254,11 @@ const styles = StyleSheet.create({
 | startDate  | Moment  | yes (if ```range```)  |   | Value of the picked start date.  |
 | endDate  | Moment    |yes (if ```range```)   |   | Value of the picked end date.  |
 | date |Moment    | yes (if no ```range```) |   | Value of the picked single date.  |
-| displayedDate  |Moment     | yes  |   | The date (year/month) which is being displayed on the picker.  |
+| displayedDate  |Moment     | yes  | | The date (year/month) which is being displayed on the picker.  |
 | minDate  | Moment    | no  |   | The minimum allowed date for the picker.  |
 | maxDate  | Moment    | no  |   | The maximum allowed date for the picker.  |
 | range  | boolean  | no  | false | Allows you to pick between range and single date selection.  |
+| dayHeaders| boolean  | no  | true | Allows you to enable/disable day headers. |
 | backdropStyle  | Object | no  |   | Styling for the backdrop of the picker.  |
 | containerStyle  | Object   |no  |   | Styling for the picker container. |
 | headerStyle  | Object   |no     |   | Styling for header area. |
@@ -265,6 +268,8 @@ const styles = StyleSheet.create({
 | dayTextStyle  | Object   | no    |   | Styling for the text of a single day element.  |
 | selectedStyle| Object   | no    |   | Styling for selected day element(s).  |
 | selectedTextStyle| Object  |no      |   | Styling for the text of selected day element(s). |
+| dayHeaderStyle| Object   | no    |   | Styling for selected day header element(s).  |
+| dayHeaderTextStyle| Object  |no      |   | Styling for the text of day header element(s). |
 | disabledStyle| Object   | no    |   | Styling for disabled day element(s).  |
 | disabledTextStyle| Object  |no      |   | Styling for the text of disabled day element(s). |
 | monthPrevButton| Node | no  |   | Icon for previous button.   |
