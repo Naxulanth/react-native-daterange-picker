@@ -7,7 +7,7 @@ A React Native component for picking date ranges or single dates.
 - Uses Moment.js for handling dates
 
 
-<img src="http://www.deniz.gg/date_range_3.gif" width=300/>
+<img src="http://www.deniz.gg/date_range_4.gif" width=300/>
 
 
 ## Installation
@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 
 ### Single date
 
-<img src="http://www.deniz.gg/single_date_2.gif" width=300/>
+<img src="http://www.deniz.gg/single_date_3.gif" width=300/>
 
 Use the ```date``` prop instead of the ```startDate``` and ```endDate``` props.
 
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
 
 ### Minimum and maximum allowed dates
 
-<img src="http://www.deniz.gg/disabled_dates_1.gif" width=300/>
+<img src="http://www.deniz.gg/disabled_dates_2.gif" width=300/>
 
 Use the ```minDate``` and ```maxDate``` props to disable the dates that aren't allowed.
 
