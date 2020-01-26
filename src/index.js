@@ -338,7 +338,7 @@ export default class DateRangePicker extends Component {
                     displayedDate.format("YYYY")}
                 </Text>
                 <TouchableOpacity onPress={this.nextMonth}>
-                  {monthPrevButton || (
+                  {monthNextButton || (
                     <FontAwesomeIcon
                       size={mergedStyles.monthButtons.fontSize}
                       color={mergedStyles.monthButtons.color}

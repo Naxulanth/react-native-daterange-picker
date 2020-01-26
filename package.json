@@ -21,12 +21,12 @@
   },
   "homepage": "https://github.com/naxulanth/react-native-daterange-picker/",
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.22",
-    "@fortawesome/free-solid-svg-icons": "^5.10.2",
+    "@fortawesome/fontawesome-svg-core": "^1.2.26",
+    "@fortawesome/free-solid-svg-icons": "^5.12.0",
     "@fortawesome/react-native-fontawesome": "^0.1.0",
     "lodash": "^4.17.15",
     "moment": "^2.17.1",
-    "react-native-svg": "^9.8.5"
+    "react-native-svg": "^9.13.6"
   },
   "peerDependencies": {
     "react": "^15.6.0",
