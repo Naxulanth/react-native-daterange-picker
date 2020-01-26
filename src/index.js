@@ -179,6 +179,7 @@ export default class DateRangePicker extends Component {
         .day(i)
         .format("dddd")
         .substr(0, 2);
+
       dayHeaders.push(
         <View key={"headers-" + i} style={dayHeaderStyles}>
           <Text style={dayHeaderTextStyles}>{day}</Text>
@@ -193,13 +194,20 @@ export default class DateRangePicker extends Component {
     let weeks = [];
     let week = [];
     let daysInMonth = displayedDate.daysInMonth();
+    let startOfMonth = moment(displayedDate).set("date", 1);
+    let offset = startOfMonth.day();
+    week = week.concat(
+      Array.from({ length: offset }, (x, i) => (
+        <View key={"empty-" + i} style={styles.day}></View>
+      ))
+    );
     for (let i = 1; i <= daysInMonth; ++i) {
       let date = moment(displayedDate).set("date", i);
       let selected = this.selected(date);
       let disabled = this.disabled(date);
       let day = this.generateDay(i, selected, disabled);
       week.push(day);
-      if (i % 7 === 0 || i === daysInMonth) {
+      if ((i + offset) % 7 === 0 || i === daysInMonth) {
         if (week.length < 7)
           week = week.concat(
             Array.from({ length: 7 - week.length }, (x, i) => (
@@ -393,7 +401,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     borderRadius: 8,
-    width: width * 0.85,
+    width: width * 0.85
   },
   closeTrigger: {
     width: width,
