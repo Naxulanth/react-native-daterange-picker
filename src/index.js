@@ -19,6 +19,24 @@ import {
 const height = Dimensions.get("screen").height;
 const width = Dimensions.get("screen").width;
 
+const Button = ({ children, onPress, buttonStyle, buttonTextStyle }) => {
+  const mergedStyles = {
+    button: {
+      ...styles.button,
+      ...buttonStyle
+    },
+    buttonText: {
+      ...styles.buttonText,
+      ...buttonTextStyle
+    }
+  };
+  return (
+    <TouchableOpacity onPress={onPress} style={mergedStyles.button}>
+      <Text style={mergedStyles.buttonText}>{children}</Text>
+    </TouchableOpacity>
+  );
+};
+
 export default class DateRangePicker extends Component {
   constructor(props) {
     moment = props.moment || momentDefault;
@@ -30,7 +48,6 @@ export default class DateRangePicker extends Component {
       dayHeaders: []
     };
   }
-
   componentDidMount() {
     this.populate();
   }
@@ -102,6 +119,66 @@ export default class DateRangePicker extends Component {
     );
   };
 
+  today = () => {
+    const { range, onChange } = this.props;
+    if (range)
+      this.setState(
+        {
+          selecting: true
+        },
+        () =>
+          onChange({
+            date: null,
+            startDate: moment(),
+            endDate: null,
+            selecting: true
+          })
+      );
+    else {
+      this.setState(
+        {
+          selecting: false
+        },
+        () =>
+          onChange({
+            date: moment(),
+            startDate: null,
+            endDate: null
+          })
+      );
+    }
+  };
+
+  thisWeek = () => {
+    const { onChange } = this.props;
+    this.setState(
+      {
+        selecting: false
+      },
+      () =>
+        onChange({
+          date: null,
+          startDate: moment().startOf("week"),
+          endDate: moment().endOf("week")
+        })
+    );
+  };
+
+  thisMonth = () => {
+    const { onChange } = this.props;
+    this.setState(
+      {
+        selecting: false
+      },
+      () =>
+        onChange({
+          date: null,
+          startDate: moment().startOf("month"),
+          endDate: moment().endOf("month")
+        })
+    );
+  };
+
   generateDay = (i, selected, disabled) => {
     const {
       selectedStyle,
@@ -126,13 +203,19 @@ export default class DateRangePicker extends Component {
       ...styles.disabled,
       ...disabledStyle
     };
-    const disabledTextStyles = { ...styles.disabledText, ...disabledTextStyle };
+    const disabledTextStyles = {
+      ...styles.disabledText,
+      ...disabledTextStyle
+    };
     const selectedStyles = {
       ...styles.selectedDefaults,
       ...styles.selected,
       ...selectedStyle
     };
-    const selectedTextStyles = { ...styles.selectedText, ...selectedTextStyle };
+    const selectedTextStyles = {
+      ...styles.selectedText,
+      ...selectedTextStyle
+    };
     return (
       <TouchableOpacity
         key={"day-" + i}
@@ -251,7 +334,12 @@ export default class DateRangePicker extends Component {
           {
             selecting: !selecting
           },
-          () => onChange({ date: null, endDate: null, startDate: date })
+          () =>
+            onChange({
+              date: null,
+              endDate: null,
+              startDate: date
+            })
         );
       }
     } else {
@@ -273,7 +361,12 @@ export default class DateRangePicker extends Component {
       monthPrevButton,
       monthNextButton,
       children,
-      displayedDate
+      displayedDate,
+      buttonContainerStyle,
+      buttonStyle,
+      buttonTextStyle,
+      presetButtons,
+      range
     } = this.props;
     const { isOpen, weeks, dayHeaders } = this.state;
     const mergedStyles = {
@@ -301,6 +394,10 @@ export default class DateRangePicker extends Component {
         ...styles.monthButtonsDefaults,
         ...styles.monthButtons,
         ...monthButtonsStyle
+      },
+      buttonContainer: {
+        ...styles.buttonContainer,
+        ...buttonContainerStyle
       }
     };
     let node = (
@@ -354,6 +451,35 @@ export default class DateRangePicker extends Component {
                 )}
                 {weeks}
               </View>
+              {presetButtons && (
+                <View style={mergedStyles.buttonContainer}>
+                  <Button
+                    buttonStyle={buttonStyle}
+                    buttonTextStyle={buttonTextStyle}
+                    onPress={this.today}
+                  >
+                    Today
+                  </Button>
+                  {range && (
+                    <>
+                      <Button
+                        buttonStyle={buttonStyle}
+                        buttonTextStyle={buttonTextStyle}
+                        onPress={this.thisWeek}
+                      >
+                        This Week
+                      </Button>
+                      <Button
+                        buttonStyle={buttonStyle}
+                        buttonTextStyle={buttonTextStyle}
+                        onPress={this.thisMonth}
+                      >
+                        This Month
+                      </Button>
+                    </>
+                  )}
+                </View>
+              )}
             </View>
           </View>
         </View>
@@ -367,7 +493,9 @@ export default class DateRangePicker extends Component {
 
 DateRangePicker.defaultProps = {
   dayHeaders: true,
-  range: false
+  range: false,
+  buttons: false,
+  presetButtons: false
 };
 
 DateRangePicker.propTypes = {
@@ -383,7 +511,11 @@ DateRangePicker.propTypes = {
   monthButtonsStyle: PropTypes.object,
   dayTextStyle: PropTypes.object,
   dayStyle: PropTypes.object,
-  headerStyle: PropTypes.object
+  headerStyle: PropTypes.object,
+  buttonTextStyle: PropTypes.object,
+  buttonStyle: PropTypes.object,
+  buttonContainerStyle: PropTypes.object,
+  presetButtons: PropTypes.bool
 };
 
 const styles = StyleSheet.create({
@@ -459,7 +591,8 @@ const styles = StyleSheet.create({
   },
   dayText: {
     fontSize: 16,
-    textAlign: "center"
+    textAlign: "center",
+    color: "black"
   },
   week: {
     flexDirection: "row",
@@ -480,5 +613,23 @@ const styles = StyleSheet.create({
   },
   disabledText: {
     opacity: 0.3
+  },
+  button: {
+    borderRadius: 15,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: "#bdbdbd",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    marginLeft: 10,
+    marginBottom: 10
+  },
+  buttonText: {},
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 10
   }
 });
