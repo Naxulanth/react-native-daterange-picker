@@ -4,6 +4,9 @@
   "description": "Date range and single date picker for React Native (Supports iOS and Android)",
   "main": "src/index.js",
   "scripts": {},
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/naxulanth/react-native-daterange-picker.git"
