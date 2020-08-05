@@ -1,501 +1,397 @@
 import {
   faChevronLeft,
-  faChevronRight
+  faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { isEqual } from "lodash";
 import momentDefault from "moment";
 import PropTypes from "prop-types";
-import React, { Component, Fragment } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
-  Dimensions,
   StyleSheet,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View
+  View,
 } from "react-native";
+import Button from "./components/Button";
+import Day from "./components/Day";
+import Header from "./components/Header";
+import { height, width } from "./modules";
 
-const height = Dimensions.get("screen").height;
-const width = Dimensions.get("screen").width;
-
-const Button = ({ children, onPress, buttonStyle, buttonTextStyle }) => {
+const DateRangePicker = ({
+  moment,
+  startDate,
+  endDate,
+  onChange,
+  displayedDate,
+  minDate,
+  date,
+  maxDate,
+  range,
+  dayHeaderTextStyle,
+  dayHeaderStyle,
+  backdropStyle,
+  containerStyle,
+  selectedStyle,
+  selectedTextStyle,
+  disabledStyle,
+  dayStyle,
+  dayTextStyle,
+  disabledTextStyle,
+  headerTextStyle,
+  monthButtonsStyle,
+  headerStyle,
+  monthPrevButton,
+  monthNextButton,
+  children,
+  buttonContainerStyle,
+  buttonStyle,
+  buttonTextStyle,
+  presetButtons,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [weeks, setWeeks] = useState([]);
+  const [selecting, setSelecting] = useState(false);
+  const [dayHeaders, setDayHeaders] = useState([]);
+  const _moment = moment || momentDefault;
   const mergedStyles = {
-    button: {
-      ...styles.button,
-      ...buttonStyle
+    backdrop: {
+      ...styles.backdrop,
+      ...backdropStyle,
     },
-    buttonText: {
-      ...styles.buttonText,
-      ...buttonTextStyle
+    container: {
+      ...styles.container,
+      ...containerStyle,
+    },
+    header: {
+      ...styles.header,
+      ...headerStyle,
+    },
+    headerText: {
+      ...styles.headerText,
+      ...headerTextStyle,
+    },
+    monthButtons: {
+      ...styles.monthButtons,
+      ...monthButtonsStyle,
+    },
+    buttonContainer: {
+      ...styles.buttonContainer,
+      ...buttonContainerStyle,
+    },
+  };
+
+  const onOpen = () => {
+    setIsOpen(true);
+  };
+
+  const onClose = () => {
+    setIsOpen(false);
+    setSelecting(false);
+    if (!endDate) {
+      onChange({
+        endDate: startDate,
+      });
     }
   };
-  return (
-    <TouchableOpacity onPress={onPress} style={mergedStyles.button}>
-      <Text style={mergedStyles.buttonText}>{children}</Text>
-    </TouchableOpacity>
+
+  const previousMonth = () => {
+    onChange({
+      displayedDate: _moment(displayedDate).subtract(1, "months"),
+    });
+  };
+
+  const nextMonth = () => {
+    onChange({
+      displayedDate: _moment(displayedDate).add(1, "months"),
+    });
+  };
+
+  const selected = useCallback((_date, _startDate, _endDate, __date) => {
+    return (
+      (_startDate &&
+        _endDate &&
+        _date.isBetween(_startDate, _endDate, null, "[]")) ||
+      (_startDate && _date.isSame(_startDate, "day")) ||
+      (__date && _date.isSame(__date, "day"))
+    );
+  }, []);
+
+  const disabled = useCallback((_date, _minDate, _maxDate) => {
+    return (
+      (_minDate && _date.isBefore(_minDate, "day")) ||
+      (_maxDate && _date.isAfter(_maxDate, "day"))
+    );
+  }, []);
+
+  const today = () => {
+    if (range) {
+      setSelecting(true);
+      onChange({
+        date: null,
+        startDate: _moment(),
+        endDate: null,
+        selecting: true,
+        displayedDate: _moment(),
+      });
+    } else {
+      setSelecting(false);
+      onChange({
+        date: _moment(),
+        startDate: null,
+        endDate: null,
+        displayedDate: _moment(),
+      });
+    }
+  };
+
+  const thisWeek = () => {
+    setSelecting(false);
+    onChange({
+      date: null,
+      startDate: _moment().startOf("week"),
+      endDate: _moment().endOf("week"),
+      displayedDate: _moment(),
+    });
+  };
+
+  const thisMonth = () => {
+    setSelecting(false);
+    onChange({
+      date: null,
+      startDate: _moment().startOf("month"),
+      endDate: _moment().endOf("month"),
+      displayedDate: _moment(),
+    });
+  };
+
+  const select = useCallback(
+    (day) => {
+      let _date = _moment(displayedDate);
+      _date.set("date", day);
+      if (range) {
+        if (selecting) {
+          if (_date.isBefore(startDate, "day")) {
+            setSelecting(true);
+            onChange({ startDate: _date });
+          } else {
+            setSelecting(!selecting);
+            onChange({ endDate: _date });
+          }
+        } else {
+          setSelecting(!selecting);
+          onChange({
+            date: null,
+            endDate: null,
+            startDate: _date,
+          });
+        }
+      } else {
+        onChange({
+          date: _date,
+          startDate: null,
+          endDate: null,
+        });
+      }
+    },
+    [_moment, displayedDate, onChange, range, selecting, startDate]
+  );
+
+  useEffect(() => {
+    function populateHeaders() {
+      let _dayHeaders = [];
+      for (let i = 0; i <= 6; ++i) {
+        let day = _moment(displayedDate).day(i).format("dddd").substr(0, 2);
+        _dayHeaders.push(
+          <Header
+            key={`dayHeader-${i}`}
+            day={day}
+            index={i}
+            dayHeaderTextStyle={dayHeaderTextStyle}
+            dayHeaderStyle={dayHeaderStyle}
+          />
+        );
+      }
+      return _dayHeaders;
+    }
+
+    function populateWeeks() {
+      let _weeks = [];
+      let week = [];
+      let daysInMonth = displayedDate.daysInMonth();
+      let startOfMonth = _moment(displayedDate).set("date", 1);
+      let offset = startOfMonth.day();
+      week = week.concat(
+        Array.from({ length: offset }, (x, i) => (
+          <Day empty key={"empty-" + i} />
+        ))
+      );
+      for (let i = 1; i <= daysInMonth; ++i) {
+        let _date = _moment(displayedDate).set("date", i);
+        let _selected = selected(_date, startDate, endDate, date);
+        let _disabled = disabled(_date, minDate, maxDate);
+        week.push(
+          <Day
+            key={`day-${i}`}
+            selectedStyle={selectedStyle}
+            selectedTextStyle={selectedTextStyle}
+            disabledStyle={disabledStyle}
+            dayStyle={dayStyle}
+            dayTextStyle={dayTextStyle}
+            disabledTextStyle={disabledTextStyle}
+            index={i}
+            selected={_selected}
+            disabled={_disabled}
+            select={select}
+          />
+        );
+        if ((i + offset) % 7 === 0 || i === daysInMonth) {
+          if (week.length < 7) {
+            week = week.concat(
+              Array.from({ length: 7 - week.length }, (x, index) => (
+                <Day empty key={"empty-" + index} />
+              ))
+            );
+          }
+          _weeks.push(
+            <View key={"weeks-" + i} style={styles.week}>
+              {week}
+            </View>
+          );
+          week = [];
+        }
+      }
+      return _weeks;
+    }
+    function populate() {
+      let _dayHeaders = populateHeaders();
+      let _weeks = populateWeeks();
+      setDayHeaders(_dayHeaders);
+      setWeeks(_weeks);
+    }
+    populate();
+  }, [
+    startDate,
+    endDate,
+    date,
+    _moment,
+    displayedDate,
+    dayHeaderTextStyle,
+    dayHeaderStyle,
+    selected,
+    disabled,
+    minDate,
+    maxDate,
+    selectedStyle,
+    selectedTextStyle,
+    disabledStyle,
+    dayStyle,
+    dayTextStyle,
+    disabledTextStyle,
+    select,
+  ]);
+
+  const node = (
+    <View>
+      <TouchableWithoutFeedback onPress={onOpen}>
+        {children ? (
+          children
+        ) : (
+          <View>
+            <Text>Click me to show date picker</Text>
+          </View>
+        )}
+      </TouchableWithoutFeedback>
+    </View>
+  );
+
+  return isOpen ? (
+    <>
+      <View style={mergedStyles.backdrop}>
+        <TouchableWithoutFeedback style={styles.closeTrigger} onPress={onClose}>
+          <View style={styles.closeContainer} />
+        </TouchableWithoutFeedback>
+        <View>
+          <View style={mergedStyles.container}>
+            <View style={styles.header}>
+              <TouchableOpacity onPress={previousMonth}>
+                {monthPrevButton || (
+                  <FontAwesomeIcon
+                    size={mergedStyles.monthButtons.fontSize}
+                    color={mergedStyles.monthButtons.color}
+                    style={mergedStyles.monthButtons}
+                    icon={faChevronLeft}
+                  />
+                )}
+              </TouchableOpacity>
+              <Text style={mergedStyles.headerText}>
+                {displayedDate.format("MMMM") +
+                  " " +
+                  displayedDate.format("YYYY")}
+              </Text>
+              <TouchableOpacity onPress={nextMonth}>
+                {monthNextButton || (
+                  <FontAwesomeIcon
+                    size={mergedStyles.monthButtons.fontSize}
+                    color={mergedStyles.monthButtons.color}
+                    style={mergedStyles.monthButtons}
+                    icon={faChevronRight}
+                  />
+                )}
+              </TouchableOpacity>
+            </View>
+            <View style={styles.calendar}>
+              {dayHeaders && (
+                <View style={styles.dayHeaderContainer}>{dayHeaders}</View>
+              )}
+              {weeks}
+            </View>
+            {presetButtons && (
+              <View style={mergedStyles.buttonContainer}>
+                <Button
+                  buttonStyle={buttonStyle}
+                  buttonTextStyle={buttonTextStyle}
+                  onPress={today}
+                >
+                  Today
+                </Button>
+                {range && (
+                  <>
+                    <Button
+                      buttonStyle={buttonStyle}
+                      buttonTextStyle={buttonTextStyle}
+                      onPress={thisWeek}
+                    >
+                      This Week
+                    </Button>
+                    <Button
+                      buttonStyle={buttonStyle}
+                      buttonTextStyle={buttonTextStyle}
+                      onPress={thisMonth}
+                    >
+                      This Month
+                    </Button>
+                  </>
+                )}
+              </View>
+            )}
+          </View>
+        </View>
+      </View>
+      {node}
+    </>
+  ) : (
+    <>{node}</>
   );
 };
 
-export default class DateRangePicker extends Component {
-  constructor(props) {
-    moment = props.moment || momentDefault;
-    super(props);
-    this.state = {
-      isOpen: false,
-      weeks: [],
-      selecting: false,
-      dayHeaders: []
-    };
-  }
-  componentDidMount() {
-    this.populate();
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (!isEqual(prevProps, this.props)) {
-      this.populate();
-    }
-  }
-
-  populate = () => {
-    let dayHeaders = this.populateHeaders();
-    let weeks = this.populateWeeks();
-    this.setState({
-      dayHeaders,
-      weeks
-    });
-  };
-
-  onOpen = () => {
-    this.setState({
-      isOpen: true
-    });
-  };
-
-  onClose = () => {
-    const { startDate, endDate, onChange } = this.props;
-    this.setState({
-      isOpen: false,
-      selecting: false
-    });
-    if (!endDate) {
-      onChange({
-        endDate: startDate
-      });
-    }
-  };
-
-  previousMonth = () => {
-    const { displayedDate, onChange } = this.props;
-    onChange({
-      displayedDate: moment(displayedDate).subtract(1, "months")
-    });
-  };
-
-  nextMonth = () => {
-    const { displayedDate, onChange } = this.props;
-    onChange({
-      displayedDate: moment(displayedDate).add(1, "months")
-    });
-  };
-
-  selected = date => {
-    const { startDate, endDate } = this.props;
-    return (
-      (startDate &&
-        endDate &&
-        date.isBetween(startDate, endDate, null, "[]")) ||
-      (startDate && date.isSame(startDate, "day")) ||
-      (this.props.date && date.isSame(this.props.date, "day"))
-    );
-  };
-
-  disabled = date => {
-    const { minDate, maxDate } = this.props;
-    return (
-      (minDate && date.isBefore(minDate, "day")) ||
-      (maxDate && date.isAfter(maxDate, "day"))
-    );
-  };
-
-  today = () => {
-    const { range, onChange } = this.props;
-    if (range)
-      this.setState(
-        {
-          selecting: true
-        },
-        () =>
-          onChange({
-            date: null,
-            startDate: moment(),
-            endDate: null,
-            selecting: true
-          })
-      );
-    else {
-      this.setState(
-        {
-          selecting: false
-        },
-        () =>
-          onChange({
-            date: moment(),
-            startDate: null,
-            endDate: null
-          })
-      );
-    }
-  };
-
-  thisWeek = () => {
-    const { onChange } = this.props;
-    this.setState(
-      {
-        selecting: false
-      },
-      () =>
-        onChange({
-          date: null,
-          startDate: moment().startOf("week"),
-          endDate: moment().endOf("week")
-        })
-    );
-  };
-
-  thisMonth = () => {
-    const { onChange } = this.props;
-    this.setState(
-      {
-        selecting: false
-      },
-      () =>
-        onChange({
-          date: null,
-          startDate: moment().startOf("month"),
-          endDate: moment().endOf("month")
-        })
-    );
-  };
-
-  generateDay = (i, selected, disabled) => {
-    const {
-      selectedStyle,
-      selectedTextStyle,
-      disabledStyle,
-      dayStyle,
-      dayTextStyle,
-      disabledTextStyle
-    } = this.props;
-    const dayStyles = {
-      ...styles.dayDefaults,
-      ...styles.day,
-      ...dayStyle
-    };
-    const dayTextStyles = {
-      ...styles.dayTextDefaults,
-      ...styles.dayText,
-      ...dayTextStyle
-    };
-    const disabledStyles = {
-      ...styles.selectedDefaults,
-      ...styles.disabled,
-      ...disabledStyle
-    };
-    const disabledTextStyles = {
-      ...styles.disabledText,
-      ...disabledTextStyle
-    };
-    const selectedStyles = {
-      ...styles.selectedDefaults,
-      ...styles.selected,
-      ...selectedStyle
-    };
-    const selectedTextStyles = {
-      ...styles.selectedText,
-      ...selectedTextStyle
-    };
-    return (
-      <TouchableOpacity
-        key={"day-" + i}
-        onPress={() => !disabled && this.select(i)}
-      >
-        <View style={styles.day}>
-          <View
-            style={{
-              ...dayStyles,
-              ...(selected && selectedStyles),
-              ...(disabled && disabledStyles)
-            }}
-          >
-            <Text
-              style={{
-                ...dayTextStyles,
-                ...(selected && selectedTextStyles),
-                ...(disabled && disabledTextStyles)
-              }}
-            >
-              {i}
-            </Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  populateHeaders = () => {
-    let dayHeaders = [];
-    const { dayHeaderTextStyle, dayHeaderStyle, displayedDate } = this.props;
-    const dayHeaderStyles = {
-      ...styles.dayHeaderDefaults,
-      ...styles.dayHeader,
-      ...dayHeaderStyle
-    };
-    const dayHeaderTextStyles = {
-      ...styles.dayHeaderTextDefaults,
-      ...styles.dayHeaderText,
-      ...dayHeaderTextStyle
-    };
-    for (let i = 0; i <= 6; ++i) {
-      let day = moment(displayedDate)
-        .day(i)
-        .format("dddd")
-        .substr(0, 2);
-
-      dayHeaders.push(
-        <View key={"headers-" + i} style={dayHeaderStyles}>
-          <Text style={dayHeaderTextStyles}>{day}</Text>
-        </View>
-      );
-    }
-    return dayHeaders;
-  };
-
-  populateWeeks = () => {
-    const { displayedDate } = this.props;
-    let weeks = [];
-    let week = [];
-    let daysInMonth = displayedDate.daysInMonth();
-    let startOfMonth = moment(displayedDate).set("date", 1);
-    let offset = startOfMonth.day();
-    week = week.concat(
-      Array.from({ length: offset }, (x, i) => (
-        <View key={"empty-" + i} style={styles.day}></View>
-      ))
-    );
-    for (let i = 1; i <= daysInMonth; ++i) {
-      let date = moment(displayedDate).set("date", i);
-      let selected = this.selected(date);
-      let disabled = this.disabled(date);
-      let day = this.generateDay(i, selected, disabled);
-      week.push(day);
-      if ((i + offset) % 7 === 0 || i === daysInMonth) {
-        if (week.length < 7)
-          week = week.concat(
-            Array.from({ length: 7 - week.length }, (x, i) => (
-              <View key={"empty-" + i} style={styles.day}></View>
-            ))
-          );
-        weeks.push(
-          <View key={"weeks-" + i} style={styles.week}>
-            {week}
-          </View>
-        );
-        week = [];
-      }
-    }
-    return weeks;
-  };
-
-  select = day => {
-    const { range, displayedDate, startDate, onChange } = this.props;
-    const { selecting } = this.state;
-    let date = moment(displayedDate);
-    date.set("date", day);
-    if (range) {
-      if (selecting) {
-        if (date.isBefore(startDate, "day")) {
-          this.setState(
-            {
-              selecting: true
-            },
-            () => onChange({ startDate: date })
-          );
-        } else
-          this.setState(
-            {
-              selecting: !selecting
-            },
-            () => onChange({ endDate: date })
-          );
-      } else {
-        this.setState(
-          {
-            selecting: !selecting
-          },
-          () =>
-            onChange({
-              date: null,
-              endDate: null,
-              startDate: date
-            })
-        );
-      }
-    } else {
-      onChange({
-        date: date,
-        startDate: null,
-        endDate: null
-      });
-    }
-  };
-
-  render() {
-    const {
-      backdropStyle,
-      containerStyle,
-      headerTextStyle,
-      monthButtonsStyle,
-      headerStyle,
-      monthPrevButton,
-      monthNextButton,
-      children,
-      displayedDate,
-      buttonContainerStyle,
-      buttonStyle,
-      buttonTextStyle,
-      presetButtons,
-      range
-    } = this.props;
-    const { isOpen, weeks, dayHeaders } = this.state;
-    const mergedStyles = {
-      backdrop: {
-        ...styles.backdropDefaults,
-        ...styles.backdrop,
-        ...backdropStyle
-      },
-      container: {
-        ...styles.containerDefaults,
-        ...styles.container,
-        ...containerStyle
-      },
-      header: {
-        ...styles.headerDefaults,
-        ...styles.header,
-        ...headerStyle
-      },
-      headerText: {
-        ...styles.headerTextDefaults,
-        ...styles.headerText,
-        ...headerTextStyle
-      },
-      monthButtons: {
-        ...styles.monthButtonsDefaults,
-        ...styles.monthButtons,
-        ...monthButtonsStyle
-      },
-      buttonContainer: {
-        ...styles.buttonContainer,
-        ...buttonContainerStyle
-      }
-    };
-    let node = (
-      <View>
-        <TouchableWithoutFeedback onPress={this.onOpen}>
-          {children ? children : <View></View>}
-        </TouchableWithoutFeedback>
-      </View>
-    );
-    return isOpen ? (
-      <Fragment>
-        <View style={mergedStyles.backdrop}>
-          <TouchableWithoutFeedback
-            style={styles.closeTrigger}
-            onPress={this.onClose}
-          >
-            <View style={styles.closeContainer} />
-          </TouchableWithoutFeedback>
-          <View>
-            <View style={mergedStyles.container}>
-              <View style={styles.header}>
-                <TouchableOpacity onPress={this.previousMonth}>
-                  {monthPrevButton || (
-                    <FontAwesomeIcon
-                      size={mergedStyles.monthButtons.fontSize}
-                      color={mergedStyles.monthButtons.color}
-                      style={mergedStyles.monthButtons}
-                      icon={faChevronLeft}
-                    />
-                  )}
-                </TouchableOpacity>
-                <Text style={mergedStyles.headerText}>
-                  {displayedDate.format("MMMM") +
-                    " " +
-                    displayedDate.format("YYYY")}
-                </Text>
-                <TouchableOpacity onPress={this.nextMonth}>
-                  {monthNextButton || (
-                    <FontAwesomeIcon
-                      size={mergedStyles.monthButtons.fontSize}
-                      color={mergedStyles.monthButtons.color}
-                      style={mergedStyles.monthButtons}
-                      icon={faChevronRight}
-                    />
-                  )}
-                </TouchableOpacity>
-              </View>
-              <View style={styles.calendar}>
-                {this.props.dayHeaders && (
-                  <View style={styles.dayHeaderContainer}>{dayHeaders}</View>
-                )}
-                {weeks}
-              </View>
-              {presetButtons && (
-                <View style={mergedStyles.buttonContainer}>
-                  <Button
-                    buttonStyle={buttonStyle}
-                    buttonTextStyle={buttonTextStyle}
-                    onPress={this.today}
-                  >
-                    Today
-                  </Button>
-                  {range && (
-                    <>
-                      <Button
-                        buttonStyle={buttonStyle}
-                        buttonTextStyle={buttonTextStyle}
-                        onPress={this.thisWeek}
-                      >
-                        This Week
-                      </Button>
-                      <Button
-                        buttonStyle={buttonStyle}
-                        buttonTextStyle={buttonTextStyle}
-                        onPress={this.thisMonth}
-                      >
-                        This Month
-                      </Button>
-                    </>
-                  )}
-                </View>
-              )}
-            </View>
-          </View>
-        </View>
-        {node}
-      </Fragment>
-    ) : (
-      <Fragment>{node}</Fragment>
-    );
-  }
-}
+export default DateRangePicker;
 
 DateRangePicker.defaultProps = {
   dayHeaders: true,
   range: false,
   buttons: false,
-  presetButtons: false
+  presetButtons: false,
 };
 
 DateRangePicker.propTypes = {
@@ -515,34 +411,32 @@ DateRangePicker.propTypes = {
   buttonTextStyle: PropTypes.object,
   buttonStyle: PropTypes.object,
   buttonContainerStyle: PropTypes.object,
-  presetButtons: PropTypes.bool
+  presetButtons: PropTypes.bool,
 };
 
 const styles = StyleSheet.create({
   backdrop: {
-    backgroundColor: "rgba(0,0,0,0.6)"
-  },
-  backdropDefaults: {
+    backgroundColor: "rgba(0,0,0,0.6)",
     position: "absolute",
     width: width,
     height: height,
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 2147483647
+    zIndex: 2147483647,
   },
   container: {
     backgroundColor: "white",
     borderRadius: 8,
-    width: width * 0.85
+    width: width * 0.85,
   },
   closeTrigger: {
     width: width,
-    height: height
+    height: height,
   },
   closeContainer: {
     width: "100%",
     height: "100%",
-    position: "absolute"
+    position: "absolute",
   },
   header: {
     flexDirection: "row",
@@ -553,83 +447,37 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
-    paddingBottom: 15
+    paddingBottom: 15,
   },
   calendar: {
     paddingTop: 20,
     paddingBottom: 20,
     width: "100%",
-    padding: 10
+    padding: 10,
   },
   headerText: {
     fontSize: 16,
-    color: "black"
+    color: "black",
   },
   monthButtons: {
     fontSize: 16,
-    color: "black"
-  },
-  day: {
-    width: width * 0.09,
-    height: height * 0.065,
-    justifyContent: "center"
-  },
-  dayHeader: {
-    width: width * 0.09,
-    height: height * 0.03,
-    justifyContent: "center"
-  },
-  dayHeaderText: {
-    opacity: 0.6,
-    textAlign: "center"
+    color: "black",
   },
   dayHeaderContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-evenly",
-    paddingBottom: 10
-  },
-  dayText: {
-    fontSize: 16,
-    textAlign: "center",
-    color: "black"
+    paddingBottom: 10,
   },
   week: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
-  selected: {
-    backgroundColor: "#3b83f7",
-    height: "80%",
-    borderRadius: 8
-  },
-  selectedText: {
-    color: "white"
-  },
-  selectedDefaults: {
-    alignItems: "center",
-    justifyContent: "center"
-  },
-  disabledText: {
-    opacity: 0.3
-  },
-  button: {
-    borderRadius: 15,
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderColor: "#bdbdbd",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 10,
-    marginLeft: 10,
-    marginBottom: 10
-  },
-  buttonText: {},
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 10
-  }
+    marginBottom: 10,
+  },
 });

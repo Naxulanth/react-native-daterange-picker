@@ -1,6 +1,6 @@
 {
   "name": "react-native-daterange-picker",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Date range and single date picker for React Native (Supports iOS and Android)",
   "main": "src/index.js",
   "scripts": {},
@@ -21,15 +21,25 @@
   },
   "homepage": "https://github.com/naxulanth/react-native-daterange-picker/",
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.26",
-    "@fortawesome/free-solid-svg-icons": "^5.12.0",
-    "@fortawesome/react-native-fontawesome": "^0.1.0",
-    "lodash": "^4.17.15",
-    "moment": "^2.17.1",
-    "react-native-svg": "^9.13.6"
+    "@fortawesome/fontawesome-svg-core": "^1.2.30",
+    "@fortawesome/free-solid-svg-icons": "^5.14.0",
+    "@fortawesome/react-native-fontawesome": "^0.2.5",
+    "lodash": "^4.17.19",
+    "moment": "^2.27.0",
+    "react-native-svg": "^12.1.0"
   },
   "peerDependencies": {
-    "react": "^15.6.0",
-    "react-native": "^0.56.0"
+    "react": "^16.13.1",
+    "react-native": "^0.63.2"
+  },
+  "devDependencies": {
+    "@react-native-community/eslint-config": "^2.0.0",
+    "eslint": "^7.6.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.20.5",
+    "eslint-plugin-react-hooks": "^4.0.8",
+    "eslint-plugin-react-native": "^3.8.1",
+    "prettier": "^2.0.5"
   }
 }
