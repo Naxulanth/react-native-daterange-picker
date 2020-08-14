@@ -1,8 +1,3 @@
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import momentDefault from "moment";
 import PropTypes from "prop-types";
 import React, { useState, useEffect, useCallback } from "react";
@@ -12,11 +7,14 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   View,
+  Image,
 } from "react-native";
 import Button from "./components/Button";
 import Day from "./components/Day";
 import Header from "./components/Header";
 import { height, width } from "./modules";
+import chevronL from "./assets/chevronL.png";
+import chevronR from "./assets/chevronR.png";
 
 const DateRangePicker = ({
   moment,
@@ -78,6 +76,10 @@ const DateRangePicker = ({
     buttonContainer: {
       ...styles.buttonContainer,
       ...buttonContainerStyle,
+    },
+    monthButtons: {
+      ...styles.monthButtons,
+      ...monthButtonsStyle,
     },
   };
 
@@ -316,12 +318,11 @@ const DateRangePicker = ({
             <View style={styles.header}>
               <TouchableOpacity onPress={previousMonth}>
                 {monthPrevButton || (
-                  <FontAwesomeIcon
-                    size={mergedStyles.monthButtons.fontSize}
-                    color={mergedStyles.monthButtons.color}
+                  <Image
+                    resizeMode="contain"
                     style={mergedStyles.monthButtons}
-                    icon={faChevronLeft}
-                  />
+                    source={chevronL}
+                  ></Image>
                 )}
               </TouchableOpacity>
               <Text style={mergedStyles.headerText}>
@@ -331,11 +332,10 @@ const DateRangePicker = ({
               </Text>
               <TouchableOpacity onPress={nextMonth}>
                 {monthNextButton || (
-                  <FontAwesomeIcon
-                    size={mergedStyles.monthButtons.fontSize}
-                    color={mergedStyles.monthButtons.color}
+                  <Image
+                    resizeMode="contain"
                     style={mergedStyles.monthButtons}
-                    icon={faChevronRight}
+                    source={chevronR}
                   />
                 )}
               </TouchableOpacity>
@@ -479,5 +479,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
+  },
+  monthButtons: {
+    width: 32,
+    height: 32,
   },
 });
