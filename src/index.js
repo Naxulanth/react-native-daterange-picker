@@ -46,6 +46,7 @@ const DateRangePicker = ({
   buttonStyle,
   buttonTextStyle,
   presetButtons,
+  childrenContainerStyle
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [weeks, setWeeks] = useState([]);
@@ -80,6 +81,11 @@ const DateRangePicker = ({
     monthButtons: {
       ...styles.monthButtons,
       ...monthButtonsStyle,
+    },
+    childrenContainer: 
+    {
+      ...styles.childrenContainer,
+      ...childrenContainerStyle,
     },
   };
 
@@ -294,7 +300,7 @@ const DateRangePicker = ({
   ]);
 
   const node = (
-    <View>
+    <View style={mergedStyles.childrenContainer}>
       <TouchableWithoutFeedback onPress={onOpen}>
         {children ? (
           children
@@ -484,4 +490,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
   },
+  childrenContainer: {
+  }
 });
