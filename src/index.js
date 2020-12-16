@@ -215,7 +215,7 @@ const DateRangePicker = ({
     function populateHeaders() {
       let _dayHeaders = [];
       for (let i = 0; i <= 6; ++i) {
-        let day = _moment(displayedDate).day(i).format("dddd").substr(0, 2);
+        let day = _moment(displayedDate).weekday(i).format("dddd").substr(0, 2);
         _dayHeaders.push(
           <Header
             key={`dayHeader-${i}`}
@@ -234,7 +234,7 @@ const DateRangePicker = ({
       let week = [];
       let daysInMonth = displayedDate.daysInMonth();
       let startOfMonth = _moment(displayedDate).set("date", 1);
-      let offset = startOfMonth.day();
+      let offset = startOfMonth.weekday();
       week = week.concat(
         Array.from({ length: offset }, (x, i) => (
           <Day empty key={"empty-" + i} />
