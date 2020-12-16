@@ -241,36 +241,37 @@ const styles = StyleSheet.create({
 
 ## Options
 
-| Property             | type     |      required?      | defaultValue | Description                                                   |
-| -------------------- | -------- | :-----------------: | :----------: | ------------------------------------------------------------- |
-| onChange             | function |         yes         |              | Date change callback function.                                |
-| startDate            | Moment   |  yes (if `range`)   |              | Value of the picked start date.                               |
-| endDate              | Moment   |  yes (if `range`)   |              | Value of the picked end date.                                 |
-| date                 | Moment   | yes (if no `range`) |              | Value of the picked single date.                              |
-| displayedDate        | Moment   |         yes         |              | The date (year/month) which is being displayed on the picker. |
-| minDate              | Moment   |         no          |              | The minimum allowed date for the picker.                      |
-| maxDate              | Moment   |         no          |              | The maximum allowed date for the picker.                      |
-| range                | boolean  |         no          |    false     | Allows you to pick between range and single date selection.   |
-| presetButtons        | boolean  |         no          |    false     | Enables preset buttons (Today / This Week / This Month)       |
-| dayHeaders           | boolean  |         no          |     true     | Allows you to enable/disable day headers.                     |
-| backdropStyle        | Object   |         no          |              | Styling for the backdrop of the picker.                       |
-| containerStyle       | Object   |         no          |              | Styling for the picker container.                             |
-| headerStyle          | Object   |         no          |              | Styling for header area.                                      |
-| headerTextStyle      | Object   |         no          |              | Styling for header text.                                      |
-| dayStyle             | Object   |         no          |              | Styling for a single day element.                             |
-| dayTextStyle         | Object   |         no          |              | Styling for the text of a single day element.                 |
-| selectedStyle        | Object   |         no          |              | Styling for selected day element(s).                          |
-| selectedTextStyle    | Object   |         no          |              | Styling for the text of selected day element(s).              |
-| dayHeaderStyle       | Object   |         no          |              | Styling for selected day header element(s).                   |
-| dayHeaderTextStyle   | Object   |         no          |              | Styling for the text of day header element(s).                |
-| disabledStyle        | Object   |         no          |              | Styling for disabled day element(s).                          |
-| buttonStyle          | Object   |         no          |              | Styling for the preset button(s).                             |
-| buttonTextStyle      | Object   |         no          |              | Styling for the text of preset button(s).                     |
-| buttonContainerStyle | Object   |         no          |              | Styling for the preset button container.                      |
-| monthPrevButton      | Node     |         no          |              | Icon for previous button.                                     |
-| monthNextButton      | Node     |         no          |              | Icon for next button.                                         |
-| monthButtonsStyle    | Object   |         no          |              | Styling for month prev/next buttons.                          |
-| moment               | Moment   |         no          |              | Custom Moment object, useful for setting custom locale.       |
+| Property             | type     |      required?      | defaultValue | Description                                                                                                                                          |
+| -------------------- | -------- | :-----------------: | :----------: | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| open                 | boolean  |         no          |              | Prop to control calendar visibility state. Passing this prop will disable the default function for toggling visibility off by clicking the backdrop. |
+| onChange             | function |         yes         |              | Date change callback function.                                                                                                                       |
+| startDate            | Moment   |  yes (if `range`)   |              | Value of the picked start date.                                                                                                                      |
+| endDate              | Moment   |  yes (if `range`)   |              | Value of the picked end date.                                                                                                                        |
+| date                 | Moment   | yes (if no `range`) |              | Value of the picked single date.                                                                                                                     |
+| displayedDate        | Moment   |         yes         |              | The date (year/month) which is being displayed on the picker.                                                                                        |
+| minDate              | Moment   |         no          |              | The minimum allowed date for the picker.                                                                                                             |
+| maxDate              | Moment   |         no          |              | The maximum allowed date for the picker.                                                                                                             |
+| range                | boolean  |         no          |    false     | Allows you to pick between range and single date selection.                                                                                          |
+| presetButtons        | boolean  |         no          |    false     | Enables preset buttons (Today / This Week / This Month)                                                                                              |
+| dayHeaders           | boolean  |         no          |     true     | Allows you to enable/disable day headers.                                                                                                            |
+| backdropStyle        | Object   |         no          |              | Styling for the backdrop of the picker.                                                                                                              |
+| containerStyle       | Object   |         no          |              | Styling for the picker container.                                                                                                                    |
+| headerStyle          | Object   |         no          |              | Styling for header area.                                                                                                                             |
+| headerTextStyle      | Object   |         no          |              | Styling for header text.                                                                                                                             |
+| dayStyle             | Object   |         no          |              | Styling for a single day element.                                                                                                                    |
+| dayTextStyle         | Object   |         no          |              | Styling for the text of a single day element.                                                                                                        |
+| selectedStyle        | Object   |         no          |              | Styling for selected day element(s).                                                                                                                 |
+| selectedTextStyle    | Object   |         no          |              | Styling for the text of selected day element(s).                                                                                                     |
+| dayHeaderStyle       | Object   |         no          |              | Styling for selected day header element(s).                                                                                                          |
+| dayHeaderTextStyle   | Object   |         no          |              | Styling for the text of day header element(s).                                                                                                       |
+| disabledStyle        | Object   |         no          |              | Styling for disabled day element(s).                                                                                                                 |
+| buttonStyle          | Object   |         no          |              | Styling for the preset button(s).                                                                                                                    |
+| buttonTextStyle      | Object   |         no          |              | Styling for the text of preset button(s).                                                                                                            |
+| buttonContainerStyle | Object   |         no          |              | Styling for the preset button container.                                                                                                             |
+| monthPrevButton      | Node     |         no          |              | Icon for previous button.                                                                                                                            |
+| monthNextButton      | Node     |         no          |              | Icon for next button.                                                                                                                                |
+| monthButtonsStyle    | Object   |         no          |              | Styling for month prev/next buttons.                                                                                                                 |
+| moment               | Moment   |         no          |              | Custom Moment object, useful for setting custom locale.                                                                                              |
 
 ## Questions & Suggestions
 

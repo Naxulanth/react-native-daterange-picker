@@ -46,6 +46,7 @@ const DateRangePicker = ({
   buttonStyle,
   buttonTextStyle,
   presetButtons,
+  open,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [weeks, setWeeks] = useState([]);
@@ -81,6 +82,10 @@ const DateRangePicker = ({
       ...styles.monthButtons,
       ...monthButtonsStyle,
     },
+  };
+
+  const _onClose = () => {
+    if (typeof open !== "boolean") onClose();
   };
 
   const onOpen = () => {
@@ -200,6 +205,13 @@ const DateRangePicker = ({
   );
 
   useEffect(() => {
+    if (typeof open === "boolean") {
+      if (open && !isOpen) onOpen();
+      else if (!open && isOpen) onClose();
+    }
+  }, [open]);
+
+  useEffect(() => {
     function populateHeaders() {
       let _dayHeaders = [];
       for (let i = 0; i <= 6; ++i) {
@@ -310,7 +322,10 @@ const DateRangePicker = ({
   return isOpen ? (
     <>
       <View style={mergedStyles.backdrop}>
-        <TouchableWithoutFeedback style={styles.closeTrigger} onPress={onClose}>
+        <TouchableWithoutFeedback
+          style={styles.closeTrigger}
+          onPress={_onClose}
+        >
           <View style={styles.closeContainer} />
         </TouchableWithoutFeedback>
         <View>
