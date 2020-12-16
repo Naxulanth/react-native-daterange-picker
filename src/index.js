@@ -84,6 +84,10 @@ const DateRangePicker = ({
     },
   };
 
+  const _onOpen = () => {
+    if (typeof open !== "boolean") onOpen();
+  };
+
   const _onClose = () => {
     if (typeof open !== "boolean") onClose();
   };
@@ -307,7 +311,7 @@ const DateRangePicker = ({
 
   const node = (
     <View>
-      <TouchableWithoutFeedback onPress={onOpen}>
+      <TouchableWithoutFeedback onPress={_onOpen}>
         {children ? (
           children
         ) : (
