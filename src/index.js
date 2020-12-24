@@ -46,6 +46,7 @@ const DateRangePicker = ({
   buttonStyle,
   buttonTextStyle,
   presetButtons,
+  onClosePicker,
   open,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -103,6 +104,9 @@ const DateRangePicker = ({
       onChange({
         endDate: startDate,
       });
+    }
+    if(onClose){
+      onClosePicker();
     }
   };
 
