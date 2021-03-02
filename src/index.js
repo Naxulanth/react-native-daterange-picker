@@ -23,6 +23,7 @@ const DateRangePicker = ({
   onChange,
   displayedDate,
   minDate,
+  availableDays,
   date,
   maxDate,
   range,
@@ -128,7 +129,24 @@ const DateRangePicker = ({
     );
   }, []);
 
-  const disabled = useCallback((_date, _minDate, _maxDate) => {
+  const disabled = useCallback((_date, _minDate, _maxDate, availableDays) => {
+    
+    if(availableDays) {
+
+         let dayOfWeek = _date.day()
+
+         //hola
+
+         if(dayOfWeek == 0 && !availableDays.sunday) return true
+         if(dayOfWeek == 1 && !availableDays.monday) return true
+         if(dayOfWeek == 2 && !availableDays.tuesday) return true
+         if(dayOfWeek == 3 && !availableDays.wednesday) return true
+         if(dayOfWeek == 4 && !availableDays.thursday) return true
+         if(dayOfWeek == 5 && !availableDays.friday) return true
+         if(dayOfWeek == 6 && !availableDays.saturday) return true
+
+      } 
+    
     return (
       (_minDate && _date.isBefore(_minDate, "day")) ||
       (_maxDate && _date.isAfter(_maxDate, "day"))
@@ -247,7 +265,7 @@ const DateRangePicker = ({
       for (let i = 1; i <= daysInMonth; ++i) {
         let _date = _moment(displayedDate).set("date", i);
         let _selected = selected(_date, startDate, endDate, date);
-        let _disabled = disabled(_date, minDate, maxDate);
+        let _disabled = disabled(_date, minDate, maxDate, availableDays);
         week.push(
           <Day
             key={`day-${i}`}
@@ -299,6 +317,7 @@ const DateRangePicker = ({
     selected,
     disabled,
     minDate,
+    availableDays,
     maxDate,
     selectedStyle,
     selectedTextStyle,
