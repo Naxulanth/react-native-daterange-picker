@@ -319,6 +319,8 @@ const styles = StyleSheet.create({
 | endDate              | Moment   |  yes (if `range`)   |              | Value of the picked end date.                                                                                                                                           |
 | date                 | Moment   | yes (if no `range`) |              | Value of the picked single date.                                                                                                                                        |
 | displayedDate        | Moment   |         yes         |              | The date (year/month) which is being displayed on the picker.                                                                                                           |
+| availableDays        | Object   |         no          |              | Object with available days         
+
 | minDate              | Moment   |         no          |              | The minimum allowed date for the picker.                                                                                                                                |
 | maxDate              | Moment   |         no          |              | The maximum allowed date for the picker.                                                                                                                                |
 | range                | boolean  |         no          |    false     | Allows you to pick between range and single date selection.                                                                                                             |
