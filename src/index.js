@@ -135,8 +135,6 @@ const DateRangePicker = ({
 
          let dayOfWeek = _date.day()
 
-         //hola
-
          if(dayOfWeek == 0 && !availableDays.sunday) return true
          if(dayOfWeek == 1 && !availableDays.monday) return true
          if(dayOfWeek == 2 && !availableDays.tuesday) return true
