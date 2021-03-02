@@ -182,6 +182,76 @@ const styles = StyleSheet.create({
 });
 ```
 
+### Availables days
+
+<img src="https://i.imgur.com/e64EOL6.gif" width=300/>
+
+Use the `availableDays` prop to disable and enable the days that you want.
+
+```js
+import React from "react";
+import { StyleSheet, View, Text } from "react-native";
+import moment from "moment";
+import DateRangePicker from "react-native-daterange-picker";
+
+export default class App extends React.Component {
+   constructor(props) {
+      super(props);
+      this.state = {
+         date: null,
+         displayedDate: moment(),
+      };
+   }
+
+   setDates = (dates) => {
+      this.setState({
+         ...dates,
+       });
+   };
+
+   render() {
+      const { date, displayedDate } = this.state;
+      return (
+         <View style={styles.container}>
+            <DateRangePicker
+               onChange={this.setDates}
+               availableDays={{
+                  monday: true,
+                  tuesday: false,
+                  wednesday: true,
+                  thursday: false,
+                  friday: false,
+                  saturday: true,
+                  sunday: false
+               }}
+               date={date}
+               displayedDate={displayedDate}
+            >
+               <Text>
+                  Click me!
+               </Text>
+            </DateRangePicker>
+
+            <Text style={{ marginTop: 90 }}>
+               date: {(date != null) ? date.format() : ''} 
+            </Text>
+         </View>
+      );
+   }
+}
+
+const styles = StyleSheet.create({
+   container: {
+      flex: 1,
+      backgroundColor: "#fff",
+      alignItems: "center",
+      justifyContent: "center",
+   },
+});
+```
+
+
+
 ### Setting locale
 
 Simply pass your custom Moment object with locale attached to it as a prop.
@@ -250,6 +320,7 @@ const styles = StyleSheet.create({
 | date                 | Moment   | yes (if no `range`) |              | Value of the picked single date.                                                                                                                                        |
 | displayedDate        | Moment   |         yes         |              | The date (year/month) which is being displayed on the picker.                                                                                                           |
 | minDate              | Moment   |         no          |              | The minimum allowed date for the picker.                                                                                                                                |
+| availableDays        | Object   |         no          |              | The obj with available days .                                                                                                                                |
 | maxDate              | Moment   |         no          |              | The maximum allowed date for the picker.                                                                                                                                |
 | range                | boolean  |         no          |    false     | Allows you to pick between range and single date selection.                                                                                                             |
 | presetButtons        | boolean  |         no          |    false     | Enables preset buttons (Today / This Week / This Month)                                                                                                                 |
