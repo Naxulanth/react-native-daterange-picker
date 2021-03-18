@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   View,
   Image,
+  Modal
 } from "react-native";
 import Button from "./components/Button";
 import Day from "./components/Day";
@@ -323,9 +324,17 @@ const DateRangePicker = ({
     </View>
   );
 
-  return isOpen ? (
-    <>
-      <View style={mergedStyles.backdrop}>
+  return (
+    <View>
+      <Modal 
+        animationType="fade"
+        transparent={true}
+        visible={isOpen}
+        onRequestClose={() => {
+          onClose();
+        }}
+      >
+        <View style={mergedStyles.backdrop}>
         <TouchableWithoutFeedback
           style={styles.closeTrigger}
           onPress={_onClose}
@@ -397,11 +406,10 @@ const DateRangePicker = ({
           </View>
         </View>
       </View>
+      </Modal>
       {node}
-    </>
-  ) : (
-    <>{node}</>
-  );
+    </View>
+  )
 };
 
 export default DateRangePicker;
