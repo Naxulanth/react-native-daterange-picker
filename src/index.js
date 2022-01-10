@@ -15,6 +15,8 @@ import Header from "./components/Header";
 import { height, width } from "./modules";
 import chevronL from "./assets/chevronL.png";
 import chevronR from "./assets/chevronR.png";
+import chevronL2 from "./assets/chevronL2.png";
+import chevronR2 from "./assets/chevronR2.png";
 
 const DateRangePicker = ({
   moment,
@@ -41,6 +43,7 @@ const DateRangePicker = ({
   headerStyle,
   monthPrevButton,
   monthNextButton,
+  showYearNavigator,
   children,
   buttonContainerStyle,
   buttonStyle,
@@ -115,6 +118,18 @@ const DateRangePicker = ({
   const nextMonth = () => {
     onChange({
       displayedDate: _moment(displayedDate).add(1, "months"),
+    });
+  };
+
+  const nextYear = () => {
+    onChange({
+      displayedDate: _moment(displayedDate).add(1, "year"),
+    });
+  };
+
+  const previousYear = () => {
+    onChange({
+      displayedDate: _moment(displayedDate).subtract(1, "year"),
     });
   };
 
@@ -335,29 +350,53 @@ const DateRangePicker = ({
         <View>
           <View style={mergedStyles.container}>
             <View style={styles.header}>
-              <TouchableOpacity onPress={previousMonth}>
-                {monthPrevButton || (
-                  <Image
-                    resizeMode="contain"
-                    style={mergedStyles.monthButtons}
-                    source={chevronL}
-                  ></Image>
-                )}
-              </TouchableOpacity>
+              {monthPrevButton || (
+                <View style={{ flexDirection: "row" }}>
+                  <TouchableOpacity onPress={previousYear}>
+                    <Image
+                      resizeMode="contain"
+                      style={mergedStyles.monthButtons}
+                      source={chevronL2}
+                    ></Image>
+                  </TouchableOpacity>
+                  {showYearNavigator && (
+                    <TouchableOpacity onPress={previousMonth}>
+                      <Image
+                        resizeMode="contain"
+                        style={{ ...mergedStyles.monthButtons, fontSize: 6 }}
+                        source={chevronL}
+                      ></Image>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              )}
               <Text style={mergedStyles.headerText}>
                 {displayedDate.format("MMMM") +
                   " " +
                   displayedDate.format("YYYY")}
               </Text>
-              <TouchableOpacity onPress={nextMonth}>
+              <View>
                 {monthNextButton || (
-                  <Image
-                    resizeMode="contain"
-                    style={mergedStyles.monthButtons}
-                    source={chevronR}
-                  />
+                  <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity onPress={nextMonth}>
+                      <Image
+                        resizeMode="contain"
+                        style={mergedStyles.monthButtons}
+                        source={chevronR}
+                      />
+                    </TouchableOpacity>
+                    {showYearNavigator && (
+                      <TouchableOpacity onPress={nextYear}>
+                        <Image
+                          resizeMode="contain"
+                          style={mergedStyles.monthButtons}
+                          source={chevronR2}
+                        />
+                      </TouchableOpacity>
+                    )}
+                  </View>
                 )}
-              </TouchableOpacity>
+              </View>
             </View>
             <View style={styles.calendar}>
               {dayHeaders && (
@@ -431,6 +470,7 @@ DateRangePicker.propTypes = {
   buttonStyle: PropTypes.object,
   buttonContainerStyle: PropTypes.object,
   presetButtons: PropTypes.bool,
+  showYearNavigator: PropTypes.bool,
 };
 
 const styles = StyleSheet.create({
@@ -462,7 +502,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     borderBottomColor: "#efefef",
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 1.5,
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
@@ -479,7 +519,7 @@ const styles = StyleSheet.create({
     color: "black",
   },
   monthButtons: {
-    fontSize: 16,
+    fontSize: 10,
     color: "black",
   },
   dayHeaderContainer: {
