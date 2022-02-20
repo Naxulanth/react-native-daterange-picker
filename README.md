@@ -3,7 +3,7 @@
 A React Native component for picking date ranges or single dates.
 
 - Completely customizable
-- Uses Moment.js for handling dates
+- Uses Day.js for handling dates
 
 <img src="http://www.deniz.gg/date_range_4.gif" width=300/>
 
@@ -22,7 +22,7 @@ or
 ```js
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import moment from "moment";
+import dayjs from "dayjs";
 import DateRangePicker from "react-native-daterange-picker";
 
 export default class App extends React.Component {
@@ -31,7 +31,7 @@ export default class App extends React.Component {
     this.state = {
       startDate: null,
       endDate: null,
-      displayedDate: moment(),
+      displayedDate: dayjs(),
     };
   }
 
@@ -78,7 +78,7 @@ Use the `date` prop instead of the `startDate` and `endDate` props.
 ```js
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import moment from "moment";
+import dayjs from "dayjs";
 import DateRangePicker from "react-native-daterange-picker";
 
 export default class App extends React.Component {
@@ -86,7 +86,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       date: null,
-      displayedDate: moment(),
+      displayedDate: dayjs(),
     };
   }
 
@@ -131,7 +131,7 @@ Use the `minDate` and `maxDate` props to disable the dates that aren't allowed.
 ```js
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";
-import moment from "moment";
+import dayjs from "dayjs";
 import DateRangePicker from "react-native-daterange-picker";
 
 export default class App extends React.Component {
@@ -140,9 +140,9 @@ export default class App extends React.Component {
     this.state = {
       startDate: null,
       endDate: null,
-      displayedDate: moment(),
-      minDate: moment().set("date", 17),
-      maxDate: moment().set("date", 20),
+      displayedDate: dayjs(),
+      minDate: dayjs().set("date", 17),
+      maxDate: dayjs().set("date", 20),
     };
   }
 
@@ -184,15 +184,16 @@ const styles = StyleSheet.create({
 
 ### Setting locale
 
-Simply pass your custom Moment object with locale attached to it as a prop.
+Simply pass your custom DayJs object with locale attached to it as a prop.
 
 ```js
 import React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text } from "react-native";=
 import DateRangePicker from "react-native-daterange-picker";
 
-import moment from "moment/min/moment-with-locales";
-moment.locale("en");
+// sets locale globally
+import "dayjs/locale/en";
+dayjs.locale("en");
 
 export default class App extends React.Component {
   constructor(props) {
@@ -200,7 +201,7 @@ export default class App extends React.Component {
     this.state = {
       startDate: null,
       endDate: null,
-      displayedDate: moment(),
+      displayedDate: dayjs(),
     };
   }
 
@@ -220,7 +221,7 @@ export default class App extends React.Component {
           startDate={startDate}
           displayedDate={displayedDate}
           range
-          moment={moment}
+          dayjs={dayjs}
         >
           <Text>Click me!</Text>
         </DateRangePicker>
@@ -245,12 +246,12 @@ const styles = StyleSheet.create({
 | -------------------- | -------- | :-----------------: | :----------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | open                 | boolean  |         no          |              | Prop to control calendar visibility state. Passing this prop will disable the default function for toggling visibility off/on by clicking the backdrop/click me button. |
 | onChange             | function |         yes         |              | Date change callback function.                                                                                                                                          |
-| startDate            | Moment   |  yes (if `range`)   |              | Value of the picked start date.                                                                                                                                         |
-| endDate              | Moment   |  yes (if `range`)   |              | Value of the picked end date.                                                                                                                                           |
-| date                 | Moment   | yes (if no `range`) |              | Value of the picked single date.                                                                                                                                        |
-| displayedDate        | Moment   |         yes         |              | The date (year/month) which is being displayed on the picker.                                                                                                           |
-| minDate              | Moment   |         no          |              | The minimum allowed date for the picker.                                                                                                                                |
-| maxDate              | Moment   |         no          |              | The maximum allowed date for the picker.                                                                                                                                |
+| startDate            | Dayjs    |  yes (if `range`)   |              | Value of the picked start date.                                                                                                                                         |
+| endDate              | DayJs    |  yes (if `range`)   |              | Value of the picked end date.                                                                                                                                           |
+| date                 | DayJs    | yes (if no `range`) |              | Value of the picked single date.                                                                                                                                        |
+| displayedDate        | DayJs    |         yes         |              | The date (year/month) which is being displayed on the picker.                                                                                                           |
+| minDate              | DayJs    |         no          |              | The minimum allowed date for the picker.                                                                                                                                |
+| maxDate              | DayJs    |         no          |              | The maximum allowed date for the picker.                                                                                                                                |
 | range                | boolean  |         no          |    false     | Allows you to pick between range and single date selection.                                                                                                             |
 | presetButtons        | boolean  |         no          |    false     | Enables preset buttons (Today / This Week / This Month)                                                                                                                 |
 | dayHeaders           | boolean  |         no          |     true     | Allows you to enable/disable day headers.                                                                                                                               |
@@ -271,7 +272,7 @@ const styles = StyleSheet.create({
 | monthPrevButton      | Node     |         no          |              | Icon for previous button.                                                                                                                                               |
 | monthNextButton      | Node     |         no          |              | Icon for next button.                                                                                                                                                   |
 | monthButtonsStyle    | Object   |         no          |              | Styling for month prev/next buttons.                                                                                                                                    |
-| moment               | Moment   |         no          |              | Custom Moment object, useful for setting custom locale.                                                                                                                 |
+| dayjs                | Dayjs    |         no          |              | Custom DayJs object, useful for setting custom locale.                                                                                                                 |
 
 ## Questions & Suggestions
 
