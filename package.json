@@ -21,8 +21,7 @@
   },
   "homepage": "https://github.com/naxulanth/react-native-daterange-picker/",
   "dependencies": {
-    "lodash": "^4.17.19",
-    "moment": "^2.27.0"
+    "dayjs": "^1.10.7"
   },
   "peerDependencies": {
     "react": "^16.13.1",
