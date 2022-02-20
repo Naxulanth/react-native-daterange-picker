@@ -184,16 +184,12 @@ const styles = StyleSheet.create({
 
 ### Setting locale
 
-Simply pass your custom DayJs object with locale attached to it as a prop.
+Simply pass the desired locale as a prop.
 
 ```js
 import React from "react";
 import { StyleSheet, View, Text } from "react-native";=
 import DateRangePicker from "react-native-daterange-picker";
-
-// sets locale globally
-import "dayjs/locale/en";
-dayjs.locale("en");
 
 export default class App extends React.Component {
   constructor(props) {
@@ -216,12 +212,12 @@ export default class App extends React.Component {
     return (
       <View style={styles.container}>
         <DateRangePicker
+          range
           onChange={this.setDates}
           endDate={endDate}
           startDate={startDate}
           displayedDate={displayedDate}
-          range
-          dayjs={dayjs}
+          locale="de"
         >
           <Text>Click me!</Text>
         </DateRangePicker>
@@ -272,7 +268,7 @@ const styles = StyleSheet.create({
 | monthPrevButton      | Node     |         no          |              | Icon for previous button.                                                                                                                                               |
 | monthNextButton      | Node     |         no          |              | Icon for next button.                                                                                                                                                   |
 | monthButtonsStyle    | Object   |         no          |              | Styling for month prev/next buttons.                                                                                                                                    |
-| dayjs                | Dayjs    |         no          |              | Custom DayJs object, useful for setting custom locale.                                                                                                                 |
+| locale               | string   |         no          |    'en'      | Prop for setting custom locale.                                                                                                                                         |
 
 ## Questions & Suggestions
 
