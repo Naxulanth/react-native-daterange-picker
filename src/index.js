@@ -22,6 +22,7 @@ dayjs.extend(weekday);
 dayjs.extend(isBetween);
 
 const DateRangePicker = ({
+  dayjs,
   startDate,
   endDate,
   onChange,
