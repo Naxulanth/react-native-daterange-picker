@@ -1,6 +1,8 @@
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
 import isBetween from 'dayjs/plugin/isBetween';
+import localeData from "dayjs/plugin/localeData";
+
 import PropTypes from "prop-types";
 import React, { useState, useEffect, useCallback } from "react";
 import {
@@ -20,9 +22,10 @@ import chevronR from "./assets/chevronR.png";
 
 dayjs.extend(weekday);
 dayjs.extend(isBetween);
+dayjs.extend(localeData);
 
 const DateRangePicker = ({
-  dayjs,
+  locale, // default is 'en'
   startDate,
   endDate,
   onChange,
@@ -56,7 +59,7 @@ const DateRangePicker = ({
   const [isOpen, setIsOpen] = useState(false);
   const [weeks, setWeeks] = useState([]);
   const [selecting, setSelecting] = useState(false);
-  const [dayHeaders, setDayHeaders] = useState([]);
+  const [dayHeaders, setDayHeaders] = useState([]);=
   const mergedStyles = {
     backdrop: {
       ...styles.backdrop,
@@ -218,6 +221,17 @@ const DateRangePicker = ({
       else if (!open && isOpen) onClose();
     }
   }, [open]);
+  
+  useEffect(() => {
+    let lang = locale;
+    if(!lang || lang === 'en') {
+      dayjs.locale('en');
+    }else {
+      import(`dayjs/locale/${lang}`)
+        .then(() => dayjs.locale(lang))
+        .catch(er => console.error(er.message));
+    }
+  }, [locale, dayjs]);
 
   useEffect(() => {
     function populateHeaders() {
@@ -435,6 +449,7 @@ DateRangePicker.propTypes = {
   buttonStyle: PropTypes.object,
   buttonContainerStyle: PropTypes.object,
   presetButtons: PropTypes.bool,
+  locale: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
