@@ -59,7 +59,7 @@ const DateRangePicker = ({
   const [isOpen, setIsOpen] = useState(false);
   const [weeks, setWeeks] = useState([]);
   const [selecting, setSelecting] = useState(false);
-  const [dayHeaders, setDayHeaders] = useState([]);=
+  const [dayHeaders, setDayHeaders] = useState([]);
   const mergedStyles = {
     backdrop: {
       ...styles.backdrop,
