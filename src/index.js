@@ -21,6 +21,7 @@ const DateRangePicker = ({
   startDate,
   endDate,
   onChange,
+  onClose,
   displayedDate,
   minDate,
   date,
@@ -85,18 +86,10 @@ const DateRangePicker = ({
   };
 
   const _onOpen = () => {
-    if (typeof open !== "boolean") onOpen();
-  };
-
-  const _onClose = () => {
-    if (typeof open !== "boolean") onClose();
-  };
-
-  const onOpen = () => {
     setIsOpen(true);
   };
 
-  const onClose = () => {
+  const _onClose = () => {
     setIsOpen(false);
     setSelecting(false);
     if (!endDate) {
@@ -104,6 +97,8 @@ const DateRangePicker = ({
         endDate: startDate,
       });
     }
+
+    if(onClose) onClose();
   };
 
   const previousMonth = () => {
@@ -210,8 +205,8 @@ const DateRangePicker = ({
 
   useEffect(() => {
     if (typeof open === "boolean") {
-      if (open && !isOpen) onOpen();
-      else if (!open && isOpen) onClose();
+      if (open && !isOpen) _onOpen();
+      else if (!open && isOpen) _onClose();
     }
   }, [open]);
 
@@ -309,19 +304,13 @@ const DateRangePicker = ({
     select,
   ]);
 
-  const node = (
+  const node = children ? (
     <View>
       <TouchableWithoutFeedback onPress={_onOpen}>
-        {children ? (
-          children
-        ) : (
-          <View>
-            <Text>Click me to show date picker</Text>
-          </View>
-        )}
+        {children}
       </TouchableWithoutFeedback>
     </View>
-  );
+  ) : null;
 
   return isOpen ? (
     <>
@@ -399,9 +388,7 @@ const DateRangePicker = ({
       </View>
       {node}
     </>
-  ) : (
-    <>{node}</>
-  );
+  ) : node;
 };
 
 export default DateRangePicker;
@@ -415,6 +402,7 @@ DateRangePicker.defaultProps = {
 
 DateRangePicker.propTypes = {
   onChange: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   startDate: PropTypes.object,
   endDate: PropTypes.object,
   displayedDate: PropTypes.object,
