@@ -1,14 +1,6 @@
-import momentDefault from "moment";
 import PropTypes from "prop-types";
-import React, { useState, useEffect, useCallback } from "react";
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-  Image,
-} from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {Image, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View} from "react-native";
 import Button from "./components/Button";
 import Day from "./components/Day";
 import Header from "./components/Header";
@@ -52,7 +44,7 @@ const DateRangePicker = ({
   const [weeks, setWeeks] = useState([]);
   const [selecting, setSelecting] = useState(false);
   const [dayHeaders, setDayHeaders] = useState([]);
-  const _moment = moment || momentDefault;
+  const _moment = moment;
   const mergedStyles = {
     backdrop: {
       ...styles.backdrop,
@@ -78,25 +70,25 @@ const DateRangePicker = ({
       ...styles.buttonContainer,
       ...buttonContainerStyle,
     },
-    monthButtons: {
-      ...styles.monthButtons,
-      ...monthButtonsStyle,
-    },
   };
 
   const _onOpen = () => {
-    if (typeof open !== "boolean") onOpen();
+    if (typeof open !== "boolean") {
+      onOpen();
+    }
   };
 
   const _onClose = () => {
-    if (typeof open !== "boolean") onClose();
+    if (typeof open !== "boolean") {
+      onClose();
+    }
   };
 
   const onOpen = () => {
     setIsOpen(true);
   };
 
-  const onClose = () => {
+  const onClose = useCallback(() => {
     setIsOpen(false);
     setSelecting(false);
     if (!endDate) {
@@ -104,7 +96,7 @@ const DateRangePicker = ({
         endDate: startDate,
       });
     }
-  };
+  }, [endDate, startDate, onChange]);
 
   const previousMonth = () => {
     onChange({
@@ -144,6 +136,7 @@ const DateRangePicker = ({
         endDate: null,
         selecting: true,
         displayedDate: _moment(),
+        label: "today",
       });
     } else {
       setSelecting(false);
@@ -152,6 +145,30 @@ const DateRangePicker = ({
         startDate: null,
         endDate: null,
         displayedDate: _moment(),
+        label: "today",
+      });
+    }
+  };
+
+  const yesterday = () => {
+    if (range) {
+      setSelecting(true);
+      onChange({
+        date: null,
+        startDate: _moment().lastDay("yesterday"),
+        endDate: null,
+        selecting: true,
+        displayedDate: _moment().lastDay("yesterday"),
+        label: "yesterday",
+      });
+    } else {
+      setSelecting(false);
+      onChange({
+        date: _moment().lastDay("yesterday"),
+        startDate: null,
+        endDate: null,
+        displayedDate: _moment().lastDay("yesterday"),
+        label: "yesterday",
       });
     }
   };
@@ -163,6 +180,18 @@ const DateRangePicker = ({
       startDate: _moment().startOf("week"),
       endDate: _moment().endOf("week"),
       displayedDate: _moment(),
+      label: "thisWeek",
+    });
+  };
+
+  const lastWeek = () => {
+    setSelecting(false);
+    onChange({
+      date: null,
+      startDate: _moment().lastWeek("lastWeek"),
+      endDate: _moment().lastWeek("lastWeek"),
+      displayedDate: _moment(),
+      label: "thisWeek",
     });
   };
 
@@ -173,6 +202,7 @@ const DateRangePicker = ({
       startDate: _moment().startOf("month"),
       endDate: _moment().endOf("month"),
       displayedDate: _moment(),
+      label: "thisMonth",
     });
   };
 
@@ -210,10 +240,13 @@ const DateRangePicker = ({
 
   useEffect(() => {
     if (typeof open === "boolean") {
-      if (open && !isOpen) onOpen();
-      else if (!open && isOpen) onClose();
+      if (open && !isOpen) {
+        onOpen();
+      } else if (!open && isOpen) {
+        onClose();
+      }
     }
-  }, [open]);
+  }, [open, isOpen, onClose]);
 
   useEffect(() => {
     function populateHeaders() {
@@ -281,12 +314,14 @@ const DateRangePicker = ({
       }
       return _weeks;
     }
+
     function populate() {
       let _dayHeaders = populateHeaders();
       let _weeks = populateWeeks();
       setDayHeaders(_dayHeaders);
       setWeeks(_weeks);
     }
+
     populate();
   }, [
     startDate,
@@ -374,6 +409,13 @@ const DateRangePicker = ({
                 >
                   Today
                 </Button>
+                <Button
+                  buttonStyle={buttonStyle}
+                  buttonTextStyle={buttonTextStyle}
+                  onPress={yesterday}
+                >
+                  yesterday
+                </Button>
                 {range && (
                   <>
                     <Button
@@ -382,6 +424,13 @@ const DateRangePicker = ({
                       onPress={thisWeek}
                     >
                       This Week
+                    </Button>
+                    <Button
+                      buttonStyle={buttonStyle}
+                      buttonTextStyle={buttonTextStyle}
+                      onPress={lastWeek}
+                    >
+                      Last Week
                     </Button>
                     <Button
                       buttonStyle={buttonStyle}
@@ -481,6 +530,8 @@ const styles = StyleSheet.create({
   monthButtons: {
     fontSize: 16,
     color: "black",
+    width: 32,
+    height: 32,
   },
   dayHeaderContainer: {
     flexDirection: "row",
@@ -498,9 +549,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10,
-  },
-  monthButtons: {
-    width: 32,
-    height: 32,
   },
 });

@@ -21,15 +21,15 @@ const Button = ({ children, onPress, buttonStyle, buttonTextStyle }) => {
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 15,
+    borderRadius: 8,
     borderWidth: 1,
     borderStyle: "solid",
     borderColor: "#bdbdbd",
     justifyContent: "center",
     alignItems: "center",
-    padding: 10,
-    marginLeft: 10,
-    marginBottom: 10,
+    padding: 8,
+    marginLeft: 8,
+    marginBottom: 8,
   },
   buttonText: {},
 });
