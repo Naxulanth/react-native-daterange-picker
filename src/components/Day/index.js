@@ -13,7 +13,9 @@ const Day = ({
   dayStyle,
   dayTextStyle,
   disabledTextStyle,
+  selectedDayStyle,
   empty,
+  isSelectedDay,
 }) => {
   const selectThis = () => {
     if (!disabled) {
@@ -52,6 +54,7 @@ const Day = ({
             ...dayStyles,
             ...(selected && selectedStyles),
             ...(disabled && disabledStyles),
+            ...(isSelectedDay && selectedDayStyle),
           }}
         >
           <Text
