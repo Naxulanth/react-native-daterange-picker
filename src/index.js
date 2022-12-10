@@ -47,6 +47,9 @@ const DateRangePicker = ({
   buttonTextStyle,
   presetButtons,
   open,
+  presetButtonTodayText,
+  presetButtonWeekText,
+  presetButtonMonthText,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [weeks, setWeeks] = useState([]);
@@ -372,7 +375,7 @@ const DateRangePicker = ({
                   buttonTextStyle={buttonTextStyle}
                   onPress={today}
                 >
-                  Today
+                  {presetButtonTodayText}
                 </Button>
                 {range && (
                   <>
@@ -381,14 +384,14 @@ const DateRangePicker = ({
                       buttonTextStyle={buttonTextStyle}
                       onPress={thisWeek}
                     >
-                      This Week
+                      {presetButtonWeekText}
                     </Button>
                     <Button
                       buttonStyle={buttonStyle}
                       buttonTextStyle={buttonTextStyle}
                       onPress={thisMonth}
                     >
-                      This Month
+                      {presetButtonMonthText}
                     </Button>
                   </>
                 )}
@@ -411,6 +414,9 @@ DateRangePicker.defaultProps = {
   range: false,
   buttons: false,
   presetButtons: false,
+  presetButtonTodayText: 'Today',
+  presetButtonWeekText: 'This Week',
+  presetButtonMonthText: 'This Month',
 };
 
 DateRangePicker.propTypes = {
@@ -431,6 +437,9 @@ DateRangePicker.propTypes = {
   buttonStyle: PropTypes.object,
   buttonContainerStyle: PropTypes.object,
   presetButtons: PropTypes.bool,
+  presetButtonTodayText: PropTypes.string,
+  presetButtonWeekText: PropTypes.string,
+  presetButtonMonthText: PropTypes.string,
 };
 
 const styles = StyleSheet.create({
